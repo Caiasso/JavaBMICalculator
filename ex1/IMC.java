@@ -1,9 +1,10 @@
 package ex1;
 
 public class IMC {
-
-	private float peso, altura;
-
+	
+	private float peso;
+	private float altura;
+	
 	public IMC(float peso, float altura) {
 		super();
 		this.peso = peso;
@@ -26,11 +27,11 @@ public class IMC {
 		this.altura = altura;
 	}
 	
-	public float calculaImc(float peso, float altura) {
+	public float calculaImc(float peso, float altura)
+	{
+		float imc = peso/(altura*altura);
 		
-		float imc = this.peso/(altura*altura);		
-	
 		return imc;
 	}
-	
+
 }

@@ -13,56 +13,20 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
+import net.miginfocom.swing.MigLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
-import net.miginfocom.swing.MigLayout;
 
+@SuppressWarnings("serial")
 public class TelaPrincipal extends JFrame implements ActionListener {
 
-	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField fieldPeso;
 	private JTextField fieldAltura;
+	private JLabel lblImc;
 	private JLabel lblResult;
-	private JLabel lblSeuImc;
-	
-
-	
-
-	public JTextField getFieldPeso() {
-		return fieldPeso;
-	}
-
-	public void setFieldPeso(JTextField fieldPeso) {
-		this.fieldPeso = fieldPeso;
-	}
-
-	public JTextField getFieldAltura() {
-		return fieldAltura;
-	}
-
-	public void setFieldAltura(JTextField fieldAltura) {
-		this.fieldAltura = fieldAltura;
-	}
-
-	public JLabel getLblResult() {
-		return lblResult;
-	}
-
-	public void setLblResult(JLabel lblResult) {
-		this.lblResult = lblResult;
-	}
-
-	public JLabel getLblSeuImc() {
-		return lblSeuImc;
-	}
-
-	public void setLblSeuImc(JLabel lblSeuImc) {
-		this.lblSeuImc = lblSeuImc;
-	}
 
 	/**
 	 * Launch the application.
@@ -73,7 +37,6 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 				try {
 					TelaPrincipal frame = new TelaPrincipal();
 					frame.setVisible(true);
-					frame.setResizable(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -86,49 +49,49 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 	 */
 	public TelaPrincipal() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 299, 420);
+		setBounds(100, 100, 260, 380);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblNewLabel = new JLabel("Calculadora de IMC");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 22));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		contentPane.add(lblNewLabel, BorderLayout.NORTH);
+		JLabel lblTitulo = new JLabel("Calculadora de IMC");
+		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 22));
+		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+		contentPane.add(lblTitulo, BorderLayout.NORTH);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		contentPane.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new MigLayout("", "[253px]", "[14px][][30px][20][14px][30px][20][23px][20][30px][14px]"));
+		panel.setLayout(new MigLayout("", "[grow]", "[][][20][][][20][][20][][]"));
 		
 		JLabel lblPeso = new JLabel("Seu peso em Kg");
-		panel.add(lblPeso, "cell 0 0,alignx left,aligny top");
+		panel.add(lblPeso, "cell 0 0");
 		
 		fieldPeso = new JTextField();
-		panel.add(fieldPeso, "cell 0 2,grow");
+		panel.add(fieldPeso, "cell 0 1,growx");
 		fieldPeso.setColumns(10);
 		
 		JLabel lblAltura = new JLabel("Sua altura em metros");
-		panel.add(lblAltura, "cell 0 4,alignx left,aligny top");
+		panel.add(lblAltura, "cell 0 3");
 		
 		fieldAltura = new JTextField();
+		panel.add(fieldAltura, "cell 0 4,growx");
 		fieldAltura.setColumns(10);
-		panel.add(fieldAltura, "cell 0 5,grow");
 		
 		JButton btnCalcular = new JButton("Calcular");
 		btnCalcular.addActionListener(this);
-		panel.add(btnCalcular, "cell 0 7,growx,aligny top");
+		panel.add(btnCalcular, "cell 0 6,growx");
+		
+		lblImc = new JLabel("");
+		lblImc.setFont(new Font("Tahoma", Font.BOLD, 22));
+		lblImc.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblImc, "cell 0 8,alignx center");
 		
 		lblResult = new JLabel("");
-		lblResult.setFont(new Font("Tahoma", Font.BOLD, 22));
-		lblResult.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(lblResult, "cell 0 9,grow");
-		
-		lblSeuImc = new JLabel("");
-		lblSeuImc.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(lblSeuImc, "cell 0 10,growx,aligny top");
+		lblResult.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		panel.add(lblResult, "cell 0 9,alignx center");
 	}
 
 	@Override
@@ -137,34 +100,37 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 		
 		if(e.getActionCommand().equals("Calcular"))
 		{
-			float peso = Float.parseFloat(fieldPeso.getText());
-			float altura = Float.parseFloat(fieldAltura.getText());
-			
-			IMC imc = new IMC(peso, altura);
-			
-			float resultado = imc.calculaImc(peso, altura);
-			
-			DecimalFormat df = new DecimalFormat("0.##");
-			String fim = df.format(resultado);
-			
-			
-			lblResult.setText(fim);
-			lblSeuImc.setText("Seu IMC");
-			
-			if(resultado < 25)
+			if(! fieldAltura.getText().isEmpty() && ! fieldPeso.getText().isEmpty())
 			{
-				JOptionPane.showMessageDialog(contentPane, "Subpeso", "Resultado", 1);
+				float peso = Float.parseFloat(fieldPeso.getText());
+				float altura = Float.parseFloat(fieldAltura.getText());
+				
+				IMC imc = new IMC(peso, altura);
+				
+				DecimalFormat df = new DecimalFormat("0.##");
+				float resultado = imc.calculaImc(peso, altura);
+				String resultadoForm = df.format(resultado);
+				
+				lblImc.setText(resultadoForm);
+				lblResult.setText("Seu IMC");
+				
+				if(resultado < 25)
+				{
+					JOptionPane.showMessageDialog(contentPane, "Subpeso", "Seu Resultado", 1);
+				}
+				else if(resultado < 30)
+				{
+					JOptionPane.showMessageDialog(contentPane, "Peso Normal", "Seu Resultado", 1);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(contentPane, "Sobrepeso", "Seu Resultado", 1);
+				}
 			}
-			else if(resultado < 30)
-			{
-				JOptionPane.showMessageDialog(contentPane, "Peso Normal", "Resultado", 1);
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(contentPane, "Sobrepeso", "Resultado", 1);
-			}
-			
 		}
 		
 	}
+	
+	
+
 }
